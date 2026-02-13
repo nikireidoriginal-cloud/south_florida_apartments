@@ -194,14 +194,6 @@
     gap: 6px;
   }
   .ws-num { font-weight: 600; font-size: 0.88rem; }
-  .ws-bar {
-    width: 40px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .ws-fill { height: 100%; border-radius: 2px; }
   .ws-label { font-size: 0.72rem; color: var(--text-light); }
 
   /* LOCATION */
@@ -262,7 +254,7 @@
     vertical-align: middle;
   }
   .act-love {
-    color: var(--border);
+    color: #9ca3af;
   }
   .act-love:hover {
     color: #e11d48;
@@ -271,7 +263,7 @@
     color: #e11d48;
   }
   .act-pass {
-    color: var(--border);
+    color: #9ca3af;
     font-size: 0.85rem;
   }
   .act-pass:hover {
@@ -287,17 +279,6 @@
     padding: 4px 0;
   }
   .btn-restore:hover { text-decoration: underline; }
-  .loved-row td:first-child { position: relative; }
-  .loved-row td:first-child::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: #e11d48;
-    border-radius: 0 2px 2px 0;
-  }
 
   /* LINKS */
   a { color: var(--accent); text-decoration: none; }
@@ -659,6 +640,13 @@ function wsLabel(score) {
   return 'Car-Dependent';
 }
 
+function wsColor(score) {
+  if (score >= 90) return '#16a34a';
+  if (score >= 70) return '#65a30d';
+  if (score >= 50) return '#ca8a04';
+  return '#dc2626';
+}
+
 function driveRange(mins) {
   const lo = Math.max(5, mins - 5);
   const hi = mins + 5;
@@ -681,10 +669,7 @@ function renderPropertyRow(p, isPassed) {
       </td>
       <td>
         <div class="ws">
-          <span class="ws-num">${p.walkScore}</span>
-          <div class="ws-bar">
-            <div class="ws-fill" style="width:${p.walkScore}%;background:var(--text-light)"></div>
-          </div>
+          <span class="ws-num" style="color:${wsColor(p.walkScore)}">${p.walkScore}</span>
         </div>
         <div class="ws-label">${wsLabel(p.walkScore)}</div>
       </td>
@@ -696,10 +681,10 @@ function renderPropertyRow(p, isPassed) {
         <div class="amenities-list">${p.amenities.join(', ')}</div>
       </td>
       <td>
-        <div class="dist-stack">
-          <div>${driveRange(p.distHeron.mins)} <span class="dist-label">to Heron Bay</span></div>
-          <div>${driveRange(p.distMiami.mins)} <span class="dist-label">to Miami Beach</span></div>
-        </div>
+        <div class="dist-stack">${driveRange(p.distHeron.mins)}</div>
+      </td>
+      <td>
+        <div class="dist-stack">${driveRange(p.distMiami.mins)}</div>
       </td>
       <td class="notes-cell">
         <textarea class="note-textarea" placeholder="Add notes..."
@@ -710,7 +695,7 @@ function renderPropertyRow(p, isPassed) {
       <td class="actions-cell">
         ${isPassed
           ? `<button class="btn-restore" onclick="restoreProperty('${p.id}')">Restore</button>`
-          : `<button class="act-btn act-love ${p.loved ? 'loved' : ''}" onclick="toggleLove('${p.id}')" title="${p.loved ? 'Remove from favorites' : 'Favorite'}">&#9829;</button><button class="act-btn act-pass" onclick="passProperty('${p.id}')" title="Pass">&times;</button>`
+          : `<button class="act-btn act-love ${p.loved ? 'loved' : ''}" onclick="toggleLove('${p.id}')" title="${p.loved ? 'Remove from favorites' : 'Favorite'}">&#9829;</button><button class="act-btn act-pass" onclick="passProperty('${p.id}')" title="Decline">&times;</button>`
         }
       </td>
     </tr>
@@ -732,14 +717,6 @@ function render() {
     <div class="header">
       <div>
         <h1>Reset Home</h1>
-        <div class="header-sub">2BR apartments under $6K &middot; Base: Heron Bay, Parkland</div>
-      </div>
-      <div class="header-right">
-        <div class="sync-status">
-          <div class="sync-dot ${syncDotClass}"></div>
-          <span>${syncLabel}</span>
-        </div>
-        <button class="settings-link" onclick="STATE.showConfig=true;render()">Settings</button>
       </div>
     </div>
 
@@ -750,7 +727,7 @@ function render() {
       </div>
       <div class="tab ${STATE.activeTab === 'passed' ? 'active' : ''}"
            onclick="STATE.activeTab='passed';render()">
-        Passed (${passed.length})
+        Declined (${passed.length})
       </div>
     </div>
 
@@ -764,15 +741,16 @@ function render() {
               <th>Walk Score</th>
               <th>Location & Nearby</th>
               <th>Why It Stands Out</th>
-              <th>Drive Time</th>
+              <th>Heron Bay</th>
+              <th>Miami Beach</th>
               <th>Notes</th>
-              <th></th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             ${showing.length === 0
-              ? `<tr><td colspan="8" class="empty-row">
-                  ${STATE.activeTab === 'active' ? 'No active properties. Restore from the Passed tab.' : 'No passed properties.'}
+              ? `<tr><td colspan="9" class="empty-row">
+                  ${STATE.activeTab === 'active' ? 'No active properties. Restore from the Declined tab.' : 'No declined properties.'}
                  </td></tr>`
               : showing.map(p => renderPropertyRow(p, STATE.activeTab === 'passed')).join('')
             }
