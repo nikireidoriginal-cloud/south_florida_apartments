@@ -1,0 +1,9 @@
+name = "apartment-finder"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# After running: npx wrangler kv namespace create APARTMENT_DATA
+# paste the id below
+[[kv_namespaces]]
+binding = "APARTMENT_DATA"
+id = "fce7872eddbc4c8d880e3f151ad3c250"
