@@ -162,7 +162,24 @@
   .floor-plans-link:hover { color: var(--accent); }
 
   /* COST */
-  .cost { font-weight: 600; font-size: 0.88rem; }
+  .cost-input {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text);
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-family: inherit;
+    width: 100%;
+    min-width: 140px;
+  }
+  .cost-input:hover { border-color: var(--border); }
+  .cost-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--bg);
+  }
   .cost-special {
     font-size: 0.75rem;
     color: var(--text-dim);
@@ -206,9 +223,8 @@
   }
 
   /* DISTANCE */
-  .dist-stack { font-size: 0.8rem; }
+  .dist-stack { font-size: 0.8rem; line-height: 1.6; }
   .dist-label { color: var(--text-light); font-size: 0.72rem; }
-  .dist-val { font-weight: 500; }
 
   /* NOTES */
   .notes-cell { min-width: 160px; }
@@ -517,8 +533,8 @@ const DEFAULT_PROPERTIES = [
     address: "1757 NE 9th St, Fort Lauderdale, FL 33304",
     lat: 26.1345,
     lng: -80.1253,
-    cost: "~$8,500 (3BR house)",
-    costMin: 8500,
+    cost: "$5,800 (3BR house)",
+    costMin: 5800,
     walkScore: 72,
     walkableTo: ["Victoria Park neighborhood", "Holiday Park", "Local cafes on Sunrise Blvd"],
     amenities: ["Single-family home", "2-car garage", "Impact windows", "10ft ceilings", "Custom kitchen", "Private balcony", "CBS construction"],
@@ -625,24 +641,28 @@ function toggleLove(id) {
   if (prop) { prop.loved = !prop.loved; saveState(); render(); }
 }
 
+function updateCost(id, cost) {
+  const prop = STATE.properties.find(p => p.id === id);
+  if (prop) { prop.cost = cost; saveState(); }
+}
+
 function updateNotes(id, notes) {
   const prop = STATE.properties.find(p => p.id === id);
   if (prop) { prop.notes = notes; saveState(); }
 }
 
 // ==================== RENDER ====================
-function wsColor(score) {
-  if (score >= 90) return '#22c55e';
-  if (score >= 70) return '#eab308';
-  if (score >= 50) return '#f97316';
-  return '#ef4444';
-}
-
 function wsLabel(score) {
   if (score >= 90) return "Walker's Paradise";
   if (score >= 70) return 'Very Walkable';
   if (score >= 50) return 'Somewhat Walkable';
   return 'Car-Dependent';
+}
+
+function driveRange(mins) {
+  const lo = Math.max(5, mins - 5);
+  const hi = mins + 5;
+  return lo + '–' + hi + ' min';
 }
 
 function renderPropertyRow(p, isPassed) {
@@ -654,14 +674,16 @@ function renderPropertyRow(p, isPassed) {
         <a class="floor-plans-link" href="${p.layoutLink}" target="_blank">Floor plans</a>
       </td>
       <td>
-        <div class="cost">${p.cost}</div>
+        <input class="cost-input" type="text" value="${p.cost}"
+          onchange="updateCost('${p.id}', this.value)"
+          onblur="updateCost('${p.id}', this.value)" />
         ${p.special ? `<div class="cost-special">${p.special}</div>` : ''}
       </td>
       <td>
         <div class="ws">
-          <span class="ws-num" style="color:${wsColor(p.walkScore)}">${p.walkScore}</span>
+          <span class="ws-num">${p.walkScore}</span>
           <div class="ws-bar">
-            <div class="ws-fill" style="width:${p.walkScore}%;background:${wsColor(p.walkScore)}"></div>
+            <div class="ws-fill" style="width:${p.walkScore}%;background:var(--text-light)"></div>
           </div>
         </div>
         <div class="ws-label">${wsLabel(p.walkScore)}</div>
@@ -675,8 +697,8 @@ function renderPropertyRow(p, isPassed) {
       </td>
       <td>
         <div class="dist-stack">
-          <div><span class="dist-val">${p.distHeron.miles} mi</span> <span class="dist-label">to Heron Bay</span></div>
-          <div><span class="dist-val">${p.distMiami.miles} mi</span> <span class="dist-label">to Miami Beach</span></div>
+          <div>${driveRange(p.distHeron.mins)} <span class="dist-label">to Heron Bay</span></div>
+          <div>${driveRange(p.distMiami.mins)} <span class="dist-label">to Miami Beach</span></div>
         </div>
       </td>
       <td class="notes-cell">
@@ -742,7 +764,7 @@ function render() {
               <th>Walk Score</th>
               <th>Location & Nearby</th>
               <th>Why It Stands Out</th>
-              <th>Distance</th>
+              <th>Drive Time</th>
               <th>Notes</th>
               <th></th>
             </tr>
@@ -829,7 +851,7 @@ function renderMap() {
         <b>${p.name}</b><br>
         <span style="font-size:0.85rem">${p.city}</span><br>
         <span style="font-weight:600">${p.cost}</span><br>
-        Walk Score: ${p.walkScore}<br>
+        ~${p.distHeron.mins} min to Heron Bay<br>
         <a href="${p.link}" target="_blank">View property</a>
       `);
     markers.push(marker);
