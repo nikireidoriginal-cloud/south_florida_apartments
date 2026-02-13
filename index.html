@@ -242,6 +242,20 @@
   /* ACTIONS */
   .actions-cell {
     white-space: nowrap;
+    text-align: center;
+  }
+  .act-wrap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 2px;
+  }
+  .act-label {
+    font-size: 0.62rem;
+    color: var(--text-light);
+    margin-top: 1px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
   .act-btn {
     background: none;
@@ -620,7 +634,7 @@ const DEFAULT_PROPERTIES = [
 ];
 
 // ==================== APP STATE ====================
-const API_KEY = "apartment-finder-niki";
+const API_KEY = "apartment-finder-v2";
 let STATE = {
   properties: [],
   activeTab: "active",
@@ -790,7 +804,7 @@ function renderActionCell(p, who, lovedKey, isPassed) {
     }
     return '';
   }
-  return `<button class="act-btn act-love ${p[lovedKey] ? 'loved' : ''}" onclick="toggleLove('${p.id}','${who}')" title="${p[lovedKey] ? 'Remove from favorites' : 'Favorite'}">&#9829;</button><button class="act-btn act-pass" onclick="declineProperty('${p.id}','${who}')" title="Decline">&times;</button>`;
+  return `<span class="act-wrap"><button class="act-btn act-love ${p[lovedKey] ? 'loved' : ''}" onclick="toggleLove('${p.id}','${who}')" title="${p[lovedKey] ? 'Remove from favorites' : 'Favorite'}">&#9829;</button><span class="act-label">Love</span></span><span class="act-wrap"><button class="act-btn act-pass" onclick="declineProperty('${p.id}','${who}')" title="Decline">&times;</button><span class="act-label">Decline</span></span>`;
 }
 
 function renderPropertyRow(p, isPassed) {
