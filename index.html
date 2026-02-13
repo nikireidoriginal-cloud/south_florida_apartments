@@ -279,6 +279,11 @@
     padding: 4px 0;
   }
   .btn-restore:hover { text-decoration: underline; }
+  .declined-info {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
 
   /* LINKS */
   a { color: var(--accent); text-decoration: none; }
@@ -391,6 +396,27 @@
     background: var(--border);
     cursor: default;
   }
+  .add-section-header td {
+    background: var(--text);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 8px 16px;
+    border-bottom: none;
+  }
+  .add-section-header:hover td { background: var(--text); }
+  .delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 0.75rem;
+    font-family: inherit;
+    padding: 2px 0;
+  }
+  .delete-btn:hover { color: #dc2626; }
 
   /* EMPTY STATE */
   .empty-row {
@@ -436,7 +462,10 @@ const DEFAULT_PROPERTIES = [
     special: "",
     notes: "",
     nixed: false,
-    loved: false
+    nixedBy: '',
+    nixedAt: '',
+    ferrellLoved: false,
+    nikiLoved: false
   },
   {
     id: "flow-ftl",
@@ -458,7 +487,10 @@ const DEFAULT_PROPERTIES = [
     special: "Up to 2 mo free on select units",
     notes: "",
     nixed: false,
-    loved: false
+    nixedBy: '',
+    nixedAt: '',
+    ferrellLoved: false,
+    nikiLoved: false
   },
   {
     id: "aviah-flagler",
@@ -480,7 +512,10 @@ const DEFAULT_PROPERTIES = [
     special: "1 mo free for eligible applicants",
     notes: "",
     nixed: false,
-    loved: false
+    nixedBy: '',
+    nixedAt: '',
+    ferrellLoved: false,
+    nikiLoved: false
   },
   {
     id: "novo-las-olas",
@@ -502,7 +537,10 @@ const DEFAULT_PROPERTIES = [
     special: "1 mo free if move in by 6/30",
     notes: "",
     nixed: false,
-    loved: false
+    nixedBy: '',
+    nixedAt: '',
+    ferrellLoved: false,
+    nikiLoved: false
   },
   {
     id: "icon-las-olas",
@@ -524,7 +562,10 @@ const DEFAULT_PROPERTIES = [
     special: "2 mo free if lease within 24hrs of tour",
     notes: "",
     nixed: false,
-    loved: false
+    nixedBy: '',
+    nixedAt: '',
+    ferrellLoved: false,
+    nikiLoved: false
   },
   {
     id: "wilton-metro",
@@ -546,7 +587,10 @@ const DEFAULT_PROPERTIES = [
     special: "2 mo free on select units",
     notes: "",
     nixed: false,
-    loved: false
+    nixedBy: '',
+    nixedAt: '',
+    ferrellLoved: false,
+    nikiLoved: false
   },
   {
     id: "1757-ne-9th",
@@ -568,7 +612,10 @@ const DEFAULT_PROPERTIES = [
     special: "",
     notes: "",
     nixed: false,
-    loved: false
+    nixedBy: '',
+    nixedAt: '',
+    ferrellLoved: false,
+    nikiLoved: false
   }
 ];
 
@@ -590,6 +637,13 @@ function loadState() {
       const parsed = JSON.parse(saved);
       STATE.properties = parsed.properties || DEFAULT_PROPERTIES;
       STATE.apiUrl = parsed.apiUrl || "https://apartment-finder.nikireidoriginal.workers.dev";
+      // Migrate old data format
+      STATE.properties.forEach(p => {
+        if (p.ferrellLoved === undefined) p.ferrellLoved = p.loved || false;
+        if (p.nikiLoved === undefined) p.nikiLoved = false;
+        if (p.nixedBy === undefined) p.nixedBy = '';
+        if (p.nixedAt === undefined) p.nixedAt = '';
+      });
     } catch(e) {
       STATE.properties = DEFAULT_PROPERTIES.map(p => ({...p}));
     }
@@ -648,19 +702,27 @@ function saveStateLocal() {
 }
 
 // ==================== ACTIONS ====================
-function passProperty(id) {
+function declineProperty(id, who) {
   const prop = STATE.properties.find(p => p.id === id);
-  if (prop) { prop.nixed = true; saveState(); render(); renderMap(); }
+  if (prop) {
+    prop.nixed = true;
+    prop.nixedBy = who;
+    prop.nixedAt = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    saveState(); render(); renderMap();
+  }
 }
 
 function restoreProperty(id) {
   const prop = STATE.properties.find(p => p.id === id);
-  if (prop) { prop.nixed = false; saveState(); render(); renderMap(); }
+  if (prop) { prop.nixed = false; prop.nixedBy = ''; prop.nixedAt = ''; saveState(); render(); renderMap(); }
 }
 
-function toggleLove(id) {
+function toggleLove(id, who) {
   const prop = STATE.properties.find(p => p.id === id);
-  if (prop) { prop.loved = !prop.loved; saveState(); render(); }
+  if (!prop) return;
+  if (who === 'ferrell') prop.ferrellLoved = !prop.ferrellLoved;
+  else prop.nikiLoved = !prop.nikiLoved;
+  saveState(); render();
 }
 
 function updateCost(id, cost) {
@@ -671,6 +733,11 @@ function updateCost(id, cost) {
 function updateNotes(id, notes) {
   const prop = STATE.properties.find(p => p.id === id);
   if (prop) { prop.notes = notes; saveState(); }
+}
+
+function deleteProperty(id) {
+  STATE.properties = STATE.properties.filter(p => p.id !== id);
+  saveState(); render(); renderMap();
 }
 
 function addProperty() {
@@ -686,7 +753,7 @@ function addProperty() {
     cost, costMin: 0, walkScore: 0,
     walkableTo: [], amenities: [],
     standout: '', distHeron: { miles: 0, mins: 0 }, distMiami: { miles: 0, mins: 0 },
-    link, layoutLink: link, special: '', notes, nixed: false, loved: false
+    link, layoutLink: link, special: '', notes, nixed: false, nixedBy: '', nixedAt: '', ferrellLoved: false, nikiLoved: false
   });
   saveState();
   render();
@@ -714,13 +781,26 @@ function driveRange(mins) {
   return lo + '–' + hi + ' min';
 }
 
+function renderActionCell(p, who, lovedKey, isPassed) {
+  if (isPassed) {
+    const isThisDeclined = p.nixedBy === who;
+    if (isThisDeclined) {
+      return `<button class="btn-restore" onclick="restoreProperty('${p.id}')">Restore</button>
+        <div class="declined-info">${p.nixedAt || ''}</div>`;
+    }
+    return '';
+  }
+  return `<button class="act-btn act-love ${p[lovedKey] ? 'loved' : ''}" onclick="toggleLove('${p.id}','${who}')" title="${p[lovedKey] ? 'Remove from favorites' : 'Favorite'}">&#9829;</button><button class="act-btn act-pass" onclick="declineProperty('${p.id}','${who}')" title="Decline">&times;</button>`;
+}
+
 function renderPropertyRow(p, isPassed) {
   return `
-    <tr class="${p.loved ? 'loved-row' : ''}">
+    <tr>
       <td>
         ${p.link ? `<a class="prop-name" href="${p.link}" target="_blank">${p.name}</a>` : `<span class="prop-name" style="color:var(--text)">${p.name}</span>`}
         ${p.city ? `<div class="prop-sub">${p.city}</div>` : ''}
         ${p.layoutLink ? `<a class="floor-plans-link" href="${p.layoutLink}" target="_blank">Floor plans</a>` : ''}
+        ${p.id.startsWith('custom-') ? `<button class="delete-btn" onclick="deleteProperty('${p.id}')">Delete</button>` : ''}
       </td>
       <td>
         <input class="cost-input" type="text" value="${p.cost}"
@@ -737,11 +817,11 @@ function renderPropertyRow(p, isPassed) {
         ` : '<span style="color:var(--text-light)">—</span>'}
       </td>
       <td>
-        <div class="nearby">${p.walkableTo.join(', ')}</div>
+        <div class="nearby">${(p.walkableTo || []).join(', ')}</div>
       </td>
       <td>
-        <div class="standout-text">${p.standout}</div>
-        <div class="amenities-list">${p.amenities.join(', ')}</div>
+        <div class="standout-text">${p.standout || ''}</div>
+        <div class="amenities-list">${(p.amenities || []).join(', ')}</div>
       </td>
       <td>
         <div class="dist-stack">${p.distHeron && p.distHeron.mins ? driveRange(p.distHeron.mins) : '—'}</div>
@@ -755,12 +835,8 @@ function renderPropertyRow(p, isPassed) {
           onblur="updateNotes('${p.id}', this.value)"
         >${p.notes}</textarea>
       </td>
-      <td class="actions-cell">
-        ${isPassed
-          ? `<button class="btn-restore" onclick="restoreProperty('${p.id}')">Restore</button>`
-          : `<button class="act-btn act-love ${p.loved ? 'loved' : ''}" onclick="toggleLove('${p.id}')" title="${p.loved ? 'Remove from favorites' : 'Favorite'}">&#9829;</button><button class="act-btn act-pass" onclick="passProperty('${p.id}')" title="Decline">&times;</button>`
-        }
-      </td>
+      <td class="actions-cell">${renderActionCell(p, 'ferrell', 'ferrellLoved', isPassed)}</td>
+      <td class="actions-cell">${renderActionCell(p, 'niki', 'nikiLoved', isPassed)}</td>
     </tr>
   `;
 }
@@ -807,17 +883,19 @@ function render() {
               <th>Heron Bay</th>
               <th>Miami Beach</th>
               <th>Notes</th>
-              <th>Actions</th>
+              <th>Ferrell</th>
+              <th>Niki</th>
             </tr>
           </thead>
           <tbody>
             ${showing.length === 0
-              ? `<tr><td colspan="9" class="empty-row">
+              ? `<tr><td colspan="10" class="empty-row">
                   ${STATE.activeTab === 'active' ? 'No active properties. Restore from the Declined tab.' : 'No declined properties.'}
                  </td></tr>`
               : showing.map(p => renderPropertyRow(p, STATE.activeTab === 'passed')).join('')
             }
             ${STATE.activeTab === 'active' ? `
+            <tr class="add-section-header"><td colspan="10">Add to List</td></tr>
             <tr class="add-row">
               <td><input class="add-input" id="add-name" type="text" placeholder="Place name" onkeydown="if(event.key==='Enter')addProperty()" /></td>
               <td><input class="add-input" id="add-cost" type="text" placeholder="Price" onkeydown="if(event.key==='Enter')addProperty()" /></td>
@@ -825,7 +903,7 @@ function render() {
               <td><input class="add-input" id="add-link" type="text" placeholder="Link (URL)" onkeydown="if(event.key==='Enter')addProperty()" /></td>
               <td colspan="3"></td>
               <td><input class="add-input" id="add-notes" type="text" placeholder="Notes" onkeydown="if(event.key==='Enter')addProperty()" /></td>
-              <td><button class="add-btn" onclick="addProperty()">+ Add</button></td>
+              <td colspan="2"><button class="add-btn" onclick="addProperty()">+ Add</button></td>
             </tr>
             ` : ''}
           </tbody>
