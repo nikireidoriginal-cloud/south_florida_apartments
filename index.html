@@ -351,6 +351,47 @@
   }
   .modal-btn-save:hover { background: var(--accent-hover); }
 
+  /* ADD ROW */
+  .add-row td {
+    padding: 12px 16px;
+    border-top: 1px dashed var(--border);
+    border-bottom: none;
+    background: none;
+  }
+  .add-row:hover td { background: none; }
+  .add-input {
+    width: 100%;
+    padding: 6px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-family: inherit;
+    color: var(--text);
+  }
+  .add-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .add-input::placeholder { color: var(--text-light); }
+  .add-btn {
+    padding: 5px 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .add-btn:hover { background: var(--accent-hover); }
+  .add-btn:disabled {
+    background: var(--border);
+    cursor: default;
+  }
+
   /* EMPTY STATE */
   .empty-row {
     text-align: center;
@@ -632,6 +673,26 @@ function updateNotes(id, notes) {
   if (prop) { prop.notes = notes; saveState(); }
 }
 
+function addProperty() {
+  const name = document.getElementById('add-name').value.trim();
+  if (!name) return;
+  const cost = document.getElementById('add-cost').value.trim() || '';
+  const linkEl = document.getElementById('add-link');
+  const link = linkEl ? linkEl.value.trim() : '';
+  const notes = document.getElementById('add-notes').value.trim() || '';
+  const id = 'custom-' + Date.now();
+  STATE.properties.push({
+    id, name, city: '', address: '', lat: 0, lng: 0,
+    cost, costMin: 0, walkScore: 0,
+    walkableTo: [], amenities: [],
+    standout: '', distHeron: { miles: 0, mins: 0 }, distMiami: { miles: 0, mins: 0 },
+    link, layoutLink: link, special: '', notes, nixed: false, loved: false
+  });
+  saveState();
+  render();
+  renderMap();
+}
+
 // ==================== RENDER ====================
 function wsLabel(score) {
   if (score >= 90) return "Walker's Paradise";
@@ -657,9 +718,9 @@ function renderPropertyRow(p, isPassed) {
   return `
     <tr class="${p.loved ? 'loved-row' : ''}">
       <td>
-        <a class="prop-name" href="${p.link}" target="_blank">${p.name}</a>
-        <div class="prop-sub">${p.city}</div>
-        <a class="floor-plans-link" href="${p.layoutLink}" target="_blank">Floor plans</a>
+        ${p.link ? `<a class="prop-name" href="${p.link}" target="_blank">${p.name}</a>` : `<span class="prop-name" style="color:var(--text)">${p.name}</span>`}
+        ${p.city ? `<div class="prop-sub">${p.city}</div>` : ''}
+        ${p.layoutLink ? `<a class="floor-plans-link" href="${p.layoutLink}" target="_blank">Floor plans</a>` : ''}
       </td>
       <td>
         <input class="cost-input" type="text" value="${p.cost}"
@@ -668,10 +729,12 @@ function renderPropertyRow(p, isPassed) {
         ${p.special ? `<div class="cost-special">${p.special}</div>` : ''}
       </td>
       <td>
+        ${p.walkScore ? `
         <div class="ws">
           <span class="ws-num" style="color:${wsColor(p.walkScore)}">${p.walkScore}</span>
         </div>
         <div class="ws-label">${wsLabel(p.walkScore)}</div>
+        ` : '<span style="color:var(--text-light)">—</span>'}
       </td>
       <td>
         <div class="nearby">${p.walkableTo.join(', ')}</div>
@@ -681,10 +744,10 @@ function renderPropertyRow(p, isPassed) {
         <div class="amenities-list">${p.amenities.join(', ')}</div>
       </td>
       <td>
-        <div class="dist-stack">${driveRange(p.distHeron.mins)}</div>
+        <div class="dist-stack">${p.distHeron && p.distHeron.mins ? driveRange(p.distHeron.mins) : '—'}</div>
       </td>
       <td>
-        <div class="dist-stack">${driveRange(p.distMiami.mins)}</div>
+        <div class="dist-stack">${p.distMiami && p.distMiami.mins ? driveRange(p.distMiami.mins) : '—'}</div>
       </td>
       <td class="notes-cell">
         <textarea class="note-textarea" placeholder="Add notes..."
@@ -754,6 +817,17 @@ function render() {
                  </td></tr>`
               : showing.map(p => renderPropertyRow(p, STATE.activeTab === 'passed')).join('')
             }
+            ${STATE.activeTab === 'active' ? `
+            <tr class="add-row">
+              <td><input class="add-input" id="add-name" type="text" placeholder="Place name" onkeydown="if(event.key==='Enter')addProperty()" /></td>
+              <td><input class="add-input" id="add-cost" type="text" placeholder="Price" onkeydown="if(event.key==='Enter')addProperty()" /></td>
+              <td></td>
+              <td><input class="add-input" id="add-link" type="text" placeholder="Link (URL)" onkeydown="if(event.key==='Enter')addProperty()" /></td>
+              <td colspan="3"></td>
+              <td><input class="add-input" id="add-notes" type="text" placeholder="Notes" onkeydown="if(event.key==='Enter')addProperty()" /></td>
+              <td><button class="add-btn" onclick="addProperty()">+ Add</button></td>
+            </tr>
+            ` : ''}
           </tbody>
         </table>
       </div>
