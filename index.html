@@ -651,13 +651,7 @@ function loadState() {
       const parsed = JSON.parse(saved);
       STATE.properties = parsed.properties || DEFAULT_PROPERTIES;
       STATE.apiUrl = parsed.apiUrl || "https://apartment-finder.nikireidoriginal.workers.dev";
-      // Migrate old data format
-      STATE.properties.forEach(p => {
-        if (p.ferrellLoved === undefined) p.ferrellLoved = p.loved || false;
-        if (p.nikiLoved === undefined) p.nikiLoved = false;
-        if (p.nixedBy === undefined) p.nixedBy = '';
-        if (p.nixedAt === undefined) p.nixedAt = '';
-      });
+      migrateProperties(STATE.properties);
     } catch(e) {
       STATE.properties = DEFAULT_PROPERTIES.map(p => ({...p}));
     }
@@ -666,22 +660,97 @@ function loadState() {
   }
 }
 
-function saveState() {
+function migrateProperties(props) {
+  props.forEach(p => {
+    if (p.ferrellLoved === undefined) p.ferrellLoved = p.loved || false;
+    if (p.nikiLoved === undefined) p.nikiLoved = false;
+    if (p.nixedBy === undefined) p.nixedBy = '';
+    if (p.nixedAt === undefined) p.nixedAt = '';
+  });
+}
+
+function saveStateLocal() {
   localStorage.setItem(API_KEY, JSON.stringify({
     properties: STATE.properties,
     apiUrl: STATE.apiUrl
   }));
+}
+
+function saveState() {
+  saveStateLocal();
   if (STATE.apiUrl) syncToRemote();
 }
 
+// ==================== MERGE ====================
+function mergeProperty(local, remote) {
+  const m = {...local};
+  // Preserve loves from either side
+  if (remote.ferrellLoved && !local.ferrellLoved) m.ferrellLoved = true;
+  if (remote.nikiLoved && !local.nikiLoved) m.nikiLoved = true;
+  // Preserve declines from either side
+  if (remote.nixed && !local.nixed) {
+    m.nixed = true;
+    m.nixedBy = remote.nixedBy;
+    m.nixedAt = remote.nixedAt;
+  }
+  // Preserve notes — keep remote notes if local is empty
+  if (remote.notes && !local.notes) m.notes = remote.notes;
+  // Preserve cost edits — keep remote cost if local matches default
+  const defaultProp = DEFAULT_PROPERTIES.find(d => d.id === local.id);
+  if (defaultProp && local.cost === defaultProp.cost && remote.cost !== defaultProp.cost) {
+    m.cost = remote.cost;
+  }
+  return m;
+}
+
+function mergeProperties(local, remote) {
+  const remoteMap = new Map(remote.map(p => [p.id, p]));
+  const localMap = new Map(local.map(p => [p.id, p]));
+  const merged = [];
+
+  // Merge properties that exist in local
+  for (const lp of local) {
+    if (remoteMap.has(lp.id)) {
+      merged.push(mergeProperty(lp, remoteMap.get(lp.id)));
+    } else {
+      merged.push({...lp});
+    }
+  }
+
+  // Add remote-only properties (added by the other person)
+  for (const rp of remote) {
+    if (!localMap.has(rp.id)) {
+      merged.push({...rp});
+    }
+  }
+
+  return merged;
+}
+
+// ==================== SYNC ====================
 async function syncToRemote() {
   try {
     STATE.syncStatus = "syncing";
     render();
+
+    // Fetch current remote state and merge before pushing
+    let remote = [];
+    try {
+      const getRes = await fetch(STATE.apiUrl + "/api/properties");
+      if (getRes.ok) {
+        const data = await getRes.json();
+        if (Array.isArray(data) && data.length) remote = data;
+      }
+    } catch(e) {}
+
+    const toSave = remote.length ? mergeProperties(STATE.properties, remote) : STATE.properties;
+    STATE.properties = toSave;
+    saveStateLocal();
+
     const res = await fetch(STATE.apiUrl + "/api/properties", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(STATE.properties)
+      body: JSON.stringify(toSave)
     });
     STATE.syncStatus = res.ok ? "connected" : "error";
   } catch(e) {
@@ -697,7 +766,9 @@ async function syncFromRemote() {
     if (res.ok) {
       const data = await res.json();
       if (data && data.length) {
-        STATE.properties = data;
+        migrateProperties(data);
+        // Merge remote into local instead of overwriting
+        STATE.properties = mergeProperties(STATE.properties, data);
         STATE.syncStatus = "connected";
         saveStateLocal();
         render();
@@ -706,13 +777,6 @@ async function syncFromRemote() {
   } catch(e) {
     STATE.syncStatus = "local";
   }
-}
-
-function saveStateLocal() {
-  localStorage.setItem(API_KEY, JSON.stringify({
-    properties: STATE.properties,
-    apiUrl: STATE.apiUrl
-  }));
 }
 
 // ==================== ACTIONS ====================
@@ -1019,13 +1083,15 @@ function renderMap() {
 }
 
 // ==================== INIT ====================
-loadState();
-render();
-
-// Poll for remote changes every 30s
-setInterval(() => {
-  if (STATE.apiUrl) syncFromRemote();
-}, 30000);
+(async function init() {
+  loadState();
+  render(); // render immediately with localStorage data
+  await syncFromRemote(); // then merge in remote data
+  // Poll for remote changes every 30s
+  setInterval(() => {
+    if (STATE.apiUrl) syncFromRemote();
+  }, 30000);
+})();
 </script>
 </body>
 </html>
