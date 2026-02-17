@@ -879,7 +879,7 @@ function addProperty() {
     cost, costMin: 0, walkScore: 0, soakingTub: '',
     walkableTo: [], amenities: [],
     standout: '', distHeron: { miles: 0, mins: 0 }, distMiami: { miles: 0, mins: 0 },
-    distWM: { miles: 0, mins: 0 }, distLasOlas: { miles: 0, mins: 0 }, distBirch: { miles: 0, mins: 0 }, distAIDS: { miles: 0, mins: 0 },
+    distWM: { miles: 0, mins: 0 }, distLasOlas: { miles: 0, mins: 0 }, distBirch: { miles: 0, mins: 0 },
     link, special: '', notes, proposedUnit: null, nearestBeach: null, warning: '', nixed: false, nixedBy: '', nixedAt: '', ferrellLoved: false, nikiLoved: false
   });
   saveState();
@@ -982,9 +982,6 @@ function renderPropertyRow(p, isPassed) {
       <td>
         <div class="dist-stack">${renderWalkDrive(p.distBirch)}</div>
       </td>
-      <td>
-        <div class="dist-stack">${renderWalkDrive(p.distAIDS)}</div>
-      </td>
       <td class="notes-cell">
         <textarea class="note-textarea" placeholder="Add notes..."
           onchange="updateNotes('${p.id}', this.value)"
@@ -1046,7 +1043,7 @@ function render() {
               <th rowspan="2">Nearby</th>
               <th rowspan="2" style="min-width:180px">Standout</th>
               <th colspan="2" class="group-header">Drive Time (min)</th>
-              <th colspan="4" class="group-header">Walk / Drive (min)</th>
+              <th colspan="3" class="group-header">Walk / Drive (min)</th>
               <th rowspan="2">Notes</th>
               <th rowspan="2">Ferrell</th>
               <th rowspan="2">Niki</th>
@@ -1057,18 +1054,17 @@ function render() {
               <th><a href="https://www.google.com/maps/place/Wilton+Manors,+FL" target="_blank">Wilton Manors</a></th>
               <th><a href="https://www.google.com/maps/place/Las+Olas+Boulevard,+Fort+Lauderdale,+FL" target="_blank">Las Olas</a></th>
               <th><a href="https://www.google.com/maps/place/Hugh+Taylor+Birch+State+Park" target="_blank">Birch Park</a></th>
-              <th><a href="https://www.google.com/maps/place/World+AIDS+Museum+and+Educational+Center" target="_blank">AIDS Museum</a></th>
             </tr>
           </thead>
           <tbody>
             ${showing.length === 0
-              ? `<tr><td colspan="17" class="empty-row">
+              ? `<tr><td colspan="16" class="empty-row">
                   ${STATE.activeTab === 'active' ? 'No active properties. Restore from the Declined tab.' : 'No declined properties.'}
                  </td></tr>`
               : showing.map(p => renderPropertyRow(p, STATE.activeTab === 'passed')).join('')
             }
             ${STATE.activeTab === 'active' ? `
-            <tr class="add-section-header"><td colspan="17">Add to List</td></tr>
+            <tr class="add-section-header"><td colspan="16">Add to List</td></tr>
             <tr class="add-row">
               <td><input class="add-input" id="add-name" type="text" placeholder="Place name" onkeydown="if(event.key==='Enter')addProperty()" /></td>
               <td></td>
@@ -1077,7 +1073,7 @@ function render() {
               <td></td>
               <td></td>
               <td><input class="add-input" id="add-link" type="text" placeholder="Link (URL)" onkeydown="if(event.key==='Enter')addProperty()" /></td>
-              <td colspan="7"></td>
+              <td colspan="6"></td>
               <td><input class="add-input" id="add-notes" type="text" placeholder="Notes" onkeydown="if(event.key==='Enter')addProperty()" /></td>
               <td colspan="2"><button class="add-btn" onclick="addProperty()">+ Add</button></td>
             </tr>
@@ -1125,29 +1121,18 @@ function renderMap() {
   if (map) { map.remove(); map = null; }
   markers = [];
 
-  map = L.map('map', { scrollWheelZoom: true }).setView([26.18, -80.14], 11);
+  map = L.map('map', { scrollWheelZoom: false }).setView([26.14, -80.13], 13);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
     maxZoom: 19
   }).addTo(map);
 
-  // Heron Bay marker
-  const heronIcon = L.divIcon({
-    html: '<div style="background:#6366f1;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>',
-    iconSize: [12, 12],
-    className: ''
-  });
-  L.marker([26.19, -80.26], { icon: heronIcon })
-    .addTo(map)
-    .bindPopup('<b>Heron Bay, Parkland</b><br>Home base');
-
-  // Property markers
-  const active = STATE.properties.filter(p => !p.nixed);
+  // Property markers — only active properties
+  const active = STATE.properties.filter(p => !p.nixed && p.lat);
   active.forEach(p => {
-    const color = '#2563eb';
     const icon = L.divIcon({
-      html: `<div style="background:${color};width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>`,
+      html: '<div style="background:#2563eb;width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>',
       iconSize: [10, 10],
       className: ''
     });
@@ -1155,27 +1140,17 @@ function renderMap() {
       .addTo(map)
       .bindPopup(`
         <b>${p.name}</b><br>
+        <span style="font-size:0.85em;color:#6b7280">${p.neighborhood}</span><br>
         <span style="font-weight:600">${p.cost}</span><br>
-        ~${p.distHeron.mins} min to Heron Bay<br>
         <a href="${p.link}" target="_blank">View property</a>
       `);
     markers.push(marker);
   });
 
-  // Miami Beach marker
-  const miamiIcon = L.divIcon({
-    html: '<div style="background:#f59e0b;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>',
-    iconSize: [12, 12],
-    className: ''
-  });
-  L.marker([25.7907, -80.13], { icon: miamiIcon })
-    .addTo(map)
-    .bindPopup('<b>Miami Beach</b>');
-
-  // Fit bounds
-  const allPoints = [[26.19, -80.26], [25.7907, -80.13], ...active.map(p => [p.lat, p.lng])];
+  // Fit bounds to just the properties
+  const allPoints = active.map(p => [p.lat, p.lng]);
   if (allPoints.length > 1) {
-    map.fitBounds(allPoints, { padding: [40, 40] });
+    map.fitBounds(allPoints, { padding: [50, 50] });
   }
 }
 
