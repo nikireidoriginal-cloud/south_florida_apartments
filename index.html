@@ -121,7 +121,7 @@
     font-size: 0.84rem;
   }
   th {
-    padding: 10px 16px;
+    padding: 10px 12px;
     text-align: left;
     font-weight: 500;
     font-size: 0.75rem;
@@ -129,8 +129,13 @@
     letter-spacing: 0.04em;
     color: var(--text-light);
     border-bottom: 1px solid var(--border);
-    white-space: nowrap;
   }
+  th a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  th a:hover { color: var(--accent); text-decoration: underline; }
   td {
     padding: 16px;
     border-bottom: 1px solid var(--border-light);
@@ -202,6 +207,9 @@
   .tub-no { color: #dc2626; font-weight: 600; font-size: 0.82rem; }
   .tub-yes { color: #16a34a; font-weight: 500; font-size: 0.82rem; }
   .tub-unknown { color: var(--text-light); font-size: 0.82rem; }
+  .beach-cell { white-space: nowrap; }
+  .beach-cell a { font-size: 0.8rem; }
+  .beach-dist { font-size: 0.72rem; color: var(--text-dim); display: block; }
   .group-header {
     text-align: center;
     font-size: 0.7rem;
@@ -232,6 +240,7 @@
     font-size: 0.82rem;
     color: var(--text);
     margin-bottom: 6px;
+    min-width: 180px;
   }
   .amenities-list {
     font-size: 0.75rem;
@@ -246,7 +255,7 @@
   .notes-cell { min-width: 220px; }
   .note-textarea {
     width: 100%;
-    min-height: 120px;
+    min-height: 60px;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -489,9 +498,10 @@ const DEFAULT_PROPERTIES = [
     costMin: 5732,
     walkScore: 94,
     soakingTub: "",
-    walkableTo: ["FTL Beach (~0.8 mi)", "Galleria mall"],
-    amenities: ["Sky lounge", "Spa", "Resort pool", "Valet parking"],
-    standout: "42-story Related Group tower. Sky lounge & spa. Closest to beach on Las Olas.",
+    walkableTo: ["Galleria Mall"],
+    amenities: ["Sky lounge", "Spa", "Resort pool", "Valet"],
+    standout: "42-story tower. Sky lounge & spa.",
+    nearestBeach: { label: "FTL Beach", dist: "0.8 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
     distHeron: { miles: 17, mins: 25 }, distMiami: { miles: 30, mins: 35 },
     distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0, mins: 1 },
     distBirch: { miles: 2, mins: 6 }, distAIDS: { miles: 3, mins: 10 },
@@ -512,9 +522,10 @@ const DEFAULT_PROPERTIES = [
     costMin: 3632,
     walkScore: 91,
     soakingTub: "no",
-    walkableTo: ["Brightline station", "NSU Art Museum"],
-    amenities: ["Private restaurant", "Co-working", "Screening room", "34-story tower"],
-    standout: "WeWork founder's luxury brand. Private restaurant, co-working, 34-story views.",
+    walkableTo: ["Brightline", "NSU Art Museum"],
+    amenities: ["Private restaurant", "Co-working", "Screening room"],
+    standout: "Private restaurant & co-working. Furnished units.",
+    nearestBeach: { label: "FTL Beach", dist: "3 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
     distHeron: { miles: 17, mins: 25 }, distMiami: { miles: 30, mins: 35 },
     distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0.5, mins: 3 },
     distBirch: { miles: 3, mins: 10 }, distAIDS: { miles: 3, mins: 10 },
@@ -535,9 +546,10 @@ const DEFAULT_PROPERTIES = [
     costMin: 5800,
     walkScore: 72,
     soakingTub: "",
-    walkableTo: ["Victoria Park loops", "Holiday Park"],
-    amenities: ["2-car garage", "Impact windows", "10ft ceilings", "Custom kitchen", "Private balcony"],
-    standout: "Peaceful standalone 3BR house. Multiple scenic walking loops. CBS construction.",
+    walkableTo: ["Victoria Park trails"],
+    amenities: ["2-car garage", "Impact windows", "10ft ceilings"],
+    standout: "Standalone 3BR house with garage. Scenic walking area.",
+    nearestBeach: { label: "FTL Beach", dist: "1.5 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
     distHeron: { miles: 15, mins: 22 }, distMiami: { miles: 30, mins: 35 },
     distWM: { miles: 2, mins: 7 }, distLasOlas: { miles: 1.2, mins: 5 },
     distBirch: { miles: 1.5, mins: 5 }, distAIDS: { miles: 2, mins: 7 },
@@ -558,9 +570,10 @@ const DEFAULT_PROPERTIES = [
     costMin: 2500,
     walkScore: 76,
     soakingTub: "",
-    walkableTo: ["Five Points", "Colohatchee Park"],
-    amenities: ["Basketball & tennis", "Yoga studio", "Massage room", "Dog park", "Fireplaces"],
-    standout: "Best value — full resort amenities. On Wilton Drive.",
+    walkableTo: ["World AIDS Museum", "Colohatchee Park"],
+    amenities: ["Tennis", "Yoga", "Massage", "Dog park"],
+    standout: "Best value. Full resort amenities on Wilton Drive.",
+    nearestBeach: { label: "FTL Beach", dist: "4 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
     distHeron: { miles: 12, mins: 20 }, distMiami: { miles: 33, mins: 40 },
     distWM: { miles: 0.3, mins: 2 }, distLasOlas: { miles: 3, mins: 10 },
     distBirch: { miles: 2.5, mins: 8 }, distAIDS: { miles: 0.3, mins: 2 },
@@ -581,9 +594,10 @@ const DEFAULT_PROPERTIES = [
     costMin: 3479,
     walkScore: 94,
     soakingTub: "",
-    walkableTo: ["Discovery Museum", "GreenWise Market on-site"],
-    amenities: ["Resort pool", "Fitness center", "3D virtual tours"],
-    standout: "On-site GreenWise Market — unique grocery convenience.",
+    walkableTo: ["Discovery Museum"],
+    amenities: ["Resort pool", "Fitness center"],
+    standout: "On-site GreenWise Market. Grocery convenience.",
+    nearestBeach: { label: "FTL Beach", dist: "2.5 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
     distHeron: { miles: 17, mins: 25 }, distMiami: { miles: 30, mins: 35 },
     distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0.3, mins: 2 },
     distBirch: { miles: 2.5, mins: 8 }, distAIDS: { miles: 3, mins: 10 },
@@ -671,11 +685,21 @@ function loadState() {
 }
 
 function migrateProperties(props) {
+  const defaultMap = new Map(DEFAULT_PROPERTIES.map(d => [d.id, d]));
   props.forEach(p => {
     if (p.ferrellLoved === undefined) p.ferrellLoved = p.loved || false;
     if (p.nikiLoved === undefined) p.nikiLoved = false;
     if (p.nixedBy === undefined) p.nixedBy = '';
     if (p.nixedAt === undefined) p.nixedAt = '';
+    if (p.nearestBeach === undefined) p.nearestBeach = null;
+    // Refresh display fields from defaults
+    const def = defaultMap.get(p.id);
+    if (def) {
+      p.standout = def.standout;
+      p.amenities = [...def.amenities];
+      p.walkableTo = [...def.walkableTo];
+      if (def.nearestBeach) p.nearestBeach = {...def.nearestBeach};
+    }
   });
 }
 
@@ -842,7 +866,7 @@ function addProperty() {
     walkableTo: [], amenities: [],
     standout: '', distHeron: { miles: 0, mins: 0 }, distMiami: { miles: 0, mins: 0 },
     distWM: { miles: 0, mins: 0 }, distLasOlas: { miles: 0, mins: 0 }, distBirch: { miles: 0, mins: 0 }, distAIDS: { miles: 0, mins: 0 },
-    link, special: '', notes, proposedUnit: null, warning: '', nixed: false, nixedBy: '', nixedAt: '', ferrellLoved: false, nikiLoved: false
+    link, special: '', notes, proposedUnit: null, nearestBeach: null, warning: '', nixed: false, nixedBy: '', nixedAt: '', ferrellLoved: false, nikiLoved: false
   });
   saveState();
   render();
@@ -867,7 +891,7 @@ function wsColor(score) {
 function driveRange(mins) {
   const lo = Math.max(5, mins - 5);
   const hi = mins + 5;
-  return lo + '–' + hi + ' min';
+  return lo + '–' + hi;
 }
 
 function renderActionCell(p, who, lovedKey, isPassed) {
@@ -912,6 +936,9 @@ function renderPropertyRow(p, isPassed) {
         ` : '<span style="color:var(--text-light)">—</span>'}
       </td>
       <td>${renderTubCell(p.soakingTub)}</td>
+      <td class="beach-cell">
+        ${p.nearestBeach ? `<a href="${p.nearestBeach.url}" target="_blank">${p.nearestBeach.label}</a><span class="beach-dist">${p.nearestBeach.dist}</span>` : '<span style="color:var(--text-light)">—</span>'}
+      </td>
       <td>
         <div class="nearby">${(p.walkableTo || []).join('<br>')}</div>
       </td>
@@ -985,37 +1012,39 @@ function render() {
             <tr>
               <th rowspan="2">Community</th>
               <th rowspan="2">Cost / Unit</th>
-              <th rowspan="2">Walk Score</th>
-              <th rowspan="2">Soaking Tub</th>
+              <th rowspan="2">Walk<br>Score</th>
+              <th rowspan="2">Soaking<br>Tub</th>
+              <th rowspan="2"><a href="https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" target="_blank">Beach</a></th>
               <th rowspan="2">Nearby</th>
-              <th rowspan="2">Standout</th>
-              <th colspan="2" class="group-header">Drive Time</th>
-              <th colspan="4" class="group-header">Walk / Drive</th>
+              <th rowspan="2" style="min-width:180px">Standout</th>
+              <th colspan="2" class="group-header">Drive Time (min)</th>
+              <th colspan="4" class="group-header">Walk / Drive (min)</th>
               <th rowspan="2">Notes</th>
               <th rowspan="2">Ferrell</th>
               <th rowspan="2">Niki</th>
             </tr>
             <tr>
-              <th>Heron Bay</th>
-              <th>Miami</th>
-              <th>DT WM</th>
-              <th>Las Olas</th>
-              <th>Birch Park</th>
-              <th>AIDS Museum</th>
+              <th><a href="https://www.google.com/maps/place/Heron+Bay,+Parkland,+FL" target="_blank">Heron Bay</a></th>
+              <th><a href="https://www.google.com/maps/place/Miami+Beach,+FL" target="_blank">Miami</a></th>
+              <th><a href="https://www.google.com/maps/place/Wilton+Manors,+FL" target="_blank">Wilton Manors</a></th>
+              <th><a href="https://www.google.com/maps/place/Las+Olas+Boulevard,+Fort+Lauderdale,+FL" target="_blank">Las Olas</a></th>
+              <th><a href="https://www.google.com/maps/place/Hugh+Taylor+Birch+State+Park" target="_blank">Birch Park</a></th>
+              <th><a href="https://www.google.com/maps/place/World+AIDS+Museum+and+Educational+Center" target="_blank">AIDS Museum</a></th>
             </tr>
           </thead>
           <tbody>
             ${showing.length === 0
-              ? `<tr><td colspan="15" class="empty-row">
+              ? `<tr><td colspan="16" class="empty-row">
                   ${STATE.activeTab === 'active' ? 'No active properties. Restore from the Declined tab.' : 'No declined properties.'}
                  </td></tr>`
               : showing.map(p => renderPropertyRow(p, STATE.activeTab === 'passed')).join('')
             }
             ${STATE.activeTab === 'active' ? `
-            <tr class="add-section-header"><td colspan="15">Add to List</td></tr>
+            <tr class="add-section-header"><td colspan="16">Add to List</td></tr>
             <tr class="add-row">
               <td><input class="add-input" id="add-name" type="text" placeholder="Place name" onkeydown="if(event.key==='Enter')addProperty()" /></td>
               <td><input class="add-input" id="add-cost" type="text" placeholder="Price" onkeydown="if(event.key==='Enter')addProperty()" /></td>
+              <td></td>
               <td></td>
               <td></td>
               <td><input class="add-input" id="add-link" type="text" placeholder="Link (URL)" onkeydown="if(event.key==='Enter')addProperty()" /></td>
@@ -1097,7 +1126,6 @@ function renderMap() {
       .addTo(map)
       .bindPopup(`
         <b>${p.name}</b><br>
-        <span style="font-size:0.85rem">${p.city}</span><br>
         <span style="font-weight:600">${p.cost}</span><br>
         ~${p.distHeron.mins} min to Heron Bay<br>
         <a href="${p.link}" target="_blank">View property</a>
