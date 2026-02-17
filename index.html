@@ -491,19 +491,20 @@
 const DEFAULT_PROPERTIES = [
   {
     id: "icon-las-olas",
-    name: "Icon Las Olas",
+    name: "Icon",
+    neighborhood: "Las Olas",
     address: "500 E Las Olas Blvd, Fort Lauderdale, FL 33301",
     lat: 26.1186, lng: -80.1337,
     cost: "$5,732/mo",
     costMin: 5732,
     walkScore: 94,
-    soakingTub: "",
+    soakingTub: "yes",
     walkableTo: ["Galleria Mall"],
     amenities: ["Sky lounge", "Spa", "Resort pool", "Valet"],
     standout: "42-story tower. Sky lounge & spa.",
-    nearestBeach: { label: "FTL Beach", dist: "0.8 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
+    nearestBeach: { label: "FTL Beach", dist: "0.8 mi", url: "https://www.google.com/maps/dir/?api=1&origin=500+E+Las+Olas+Blvd,+Fort+Lauderdale,+FL&destination=Fort+Lauderdale+Beach,+FL&travelmode=walking" },
     distHeron: { miles: 17, mins: 25 }, distMiami: { miles: 30, mins: 35 },
-    distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0, mins: 1 },
+    distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0, mins: 1, walkMins: 1 },
     distBirch: { miles: 2, mins: 6 }, distAIDS: { miles: 3, mins: 10 },
     link: "https://iconlasolasfl.com/luxury-apartment-amenities/",
     special: "2 mo free if lease within 24hrs of tour",
@@ -515,7 +516,8 @@ const DEFAULT_PROPERTIES = [
   },
   {
     id: "flow-ftl",
-    name: "Flow Fort Lauderdale",
+    name: "Flow",
+    neighborhood: "Downtown FTL",
     address: "221 SW 1st Ave, Fort Lauderdale, FL 33301",
     lat: 26.1186, lng: -80.1437,
     cost: "$3,632/mo (+ furn. fee)",
@@ -525,9 +527,9 @@ const DEFAULT_PROPERTIES = [
     walkableTo: ["Brightline", "NSU Art Museum"],
     amenities: ["Private restaurant", "Co-working", "Screening room"],
     standout: "Private restaurant & co-working. Furnished units.",
-    nearestBeach: { label: "FTL Beach", dist: "3 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
+    nearestBeach: { label: "FTL Beach", dist: "3 mi", url: "https://www.google.com/maps/dir/?api=1&origin=221+SW+1st+Ave,+Fort+Lauderdale,+FL&destination=Fort+Lauderdale+Beach,+FL&travelmode=walking" },
     distHeron: { miles: 17, mins: 25 }, distMiami: { miles: 30, mins: 35 },
-    distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0.5, mins: 3 },
+    distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0.5, mins: 3, walkMins: 10 },
     distBirch: { miles: 3, mins: 10 }, distAIDS: { miles: 3, mins: 10 },
     link: "https://flow.life/en/properties/fort-lauderdale/flow-life?active=1",
     special: "Up to 2 mo free on select units",
@@ -539,20 +541,21 @@ const DEFAULT_PROPERTIES = [
   },
   {
     id: "1757-ne-9th",
-    name: "1757 NE 9th St",
+    name: "Townhouse",
+    neighborhood: "Victoria Park",
     address: "1757 NE 9th St, Fort Lauderdale, FL 33304",
     lat: 26.1345, lng: -80.1253,
     cost: "$5,800/mo",
     costMin: 5800,
     walkScore: 72,
-    soakingTub: "",
+    soakingTub: "yes",
     walkableTo: ["Victoria Park trails"],
     amenities: ["2-car garage", "Impact windows", "10ft ceilings"],
     standout: "Standalone 3BR house with garage. Scenic walking area.",
-    nearestBeach: { label: "FTL Beach", dist: "1.5 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
+    nearestBeach: { label: "FTL Beach", dist: "1.5 mi", url: "https://www.google.com/maps/dir/?api=1&origin=1757+NE+9th+St,+Fort+Lauderdale,+FL&destination=Fort+Lauderdale+Beach,+FL&travelmode=walking" },
     distHeron: { miles: 15, mins: 22 }, distMiami: { miles: 30, mins: 35 },
-    distWM: { miles: 2, mins: 7 }, distLasOlas: { miles: 1.2, mins: 5 },
-    distBirch: { miles: 1.5, mins: 5 }, distAIDS: { miles: 2, mins: 7 },
+    distWM: { miles: 2, mins: 7 }, distLasOlas: { miles: 1.2, mins: 5, walkMins: 25 },
+    distBirch: { miles: 1.5, mins: 5, walkMins: 25 }, distAIDS: { miles: 2, mins: 7 },
     link: "https://www.zillow.com/homedetails/1757-NE-9th-St-Fort-Lauderdale-FL-33304/246619186_zpid/",
     special: "",
     notes: "",
@@ -564,19 +567,20 @@ const DEFAULT_PROPERTIES = [
   {
     id: "wilton-metro",
     name: "Metropolitan",
+    neighborhood: "Wilton Manors",
     address: "1220 NE 24th St, Wilton Manors, FL 33305",
     lat: 26.1548, lng: -80.1365,
     cost: "$2,500 – $3,700",
     costMin: 2500,
     walkScore: 76,
-    soakingTub: "",
+    soakingTub: "yes",
     walkableTo: ["World AIDS Museum", "Colohatchee Park"],
     amenities: ["Tennis", "Yoga", "Massage", "Dog park"],
     standout: "Best value. Full resort amenities on Wilton Drive.",
-    nearestBeach: { label: "FTL Beach", dist: "4 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
+    nearestBeach: { label: "FTL Beach", dist: "4 mi", url: "https://www.google.com/maps/dir/?api=1&origin=1220+NE+24th+St,+Wilton+Manors,+FL&destination=Fort+Lauderdale+Beach,+FL&travelmode=walking" },
     distHeron: { miles: 12, mins: 20 }, distMiami: { miles: 33, mins: 40 },
-    distWM: { miles: 0.3, mins: 2 }, distLasOlas: { miles: 3, mins: 10 },
-    distBirch: { miles: 2.5, mins: 8 }, distAIDS: { miles: 0.3, mins: 2 },
+    distWM: { miles: 0.3, mins: 2, walkMins: 6 }, distLasOlas: { miles: 3, mins: 10 },
+    distBirch: { miles: 2.5, mins: 8 }, distAIDS: { miles: 0.3, mins: 2, walkMins: 6 },
     link: "https://www.wiltonmetro.com/#section-metropolitan-living",
     special: "2 mo free on select units",
     notes: "",
@@ -587,19 +591,20 @@ const DEFAULT_PROPERTIES = [
   },
   {
     id: "novo-las-olas",
-    name: "Novo Las Olas",
+    name: "Novo",
+    neighborhood: "Las Olas",
     address: "220 SE 2nd St, Fort Lauderdale, FL 33301",
     lat: 26.1176, lng: -80.1387,
     cost: "$3,479 – $4,987",
     costMin: 3479,
     walkScore: 94,
-    soakingTub: "",
+    soakingTub: "yes",
     walkableTo: ["Discovery Museum"],
     amenities: ["Resort pool", "Fitness center"],
     standout: "On-site GreenWise Market. Grocery convenience.",
-    nearestBeach: { label: "FTL Beach", dist: "2.5 mi", url: "https://www.google.com/maps/place/Fort+Lauderdale+Beach,+Fort+Lauderdale,+FL" },
+    nearestBeach: { label: "FTL Beach", dist: "2.5 mi", url: "https://www.google.com/maps/dir/?api=1&origin=220+SE+2nd+St,+Fort+Lauderdale,+FL&destination=Fort+Lauderdale+Beach,+FL&travelmode=walking" },
     distHeron: { miles: 17, mins: 25 }, distMiami: { miles: 30, mins: 35 },
-    distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0.3, mins: 2 },
+    distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0.3, mins: 2, walkMins: 6 },
     distBirch: { miles: 2.5, mins: 8 }, distAIDS: { miles: 3, mins: 10 },
     link: "https://www.novolasolas.com/",
     special: "1 mo free if move in by 6/30",
@@ -612,6 +617,7 @@ const DEFAULT_PROPERTIES = [
   {
     id: "mizner-park",
     name: "Gables Mizner Park",
+    neighborhood: "Boca Raton",
     address: "401 NE Mizner Blvd, Boca Raton, FL 33432",
     lat: 26.3467, lng: -80.0834,
     cost: "$3,525 – $5,830",
@@ -635,6 +641,7 @@ const DEFAULT_PROPERTIES = [
   {
     id: "aviah-flagler",
     name: "Aviah Flagler Village",
+    neighborhood: "Flagler Village",
     address: "440 NE 4th Ave, Fort Lauderdale, FL 33301",
     lat: 26.1275, lng: -80.1383,
     cost: "$2,390 – $3,516",
@@ -699,6 +706,7 @@ function migrateProperties(props) {
       p.amenities = [...def.amenities];
       p.walkableTo = [...def.walkableTo];
       if (def.nearestBeach) p.nearestBeach = {...def.nearestBeach};
+      if (def.neighborhood) p.neighborhood = def.neighborhood;
     }
   });
 }
@@ -861,7 +869,7 @@ function addProperty() {
   const notes = document.getElementById('add-notes').value.trim() || '';
   const id = 'custom-' + Date.now();
   STATE.properties.push({
-    id, name, address: '', lat: 0, lng: 0,
+    id, name, neighborhood: '', address: '', lat: 0, lng: 0,
     cost, costMin: 0, walkScore: 0, soakingTub: '',
     walkableTo: [], amenities: [],
     standout: '', distHeron: { miles: 0, mins: 0 }, distMiami: { miles: 0, mins: 0 },
@@ -894,6 +902,12 @@ function driveRange(mins) {
   return lo + '–' + hi;
 }
 
+function renderWalkDrive(dist) {
+  if (!dist || !dist.mins) return '—';
+  if (dist.walkMins) return `<span style="color:#16a34a">${dist.walkMins} walk</span>`;
+  return driveRange(dist.mins);
+}
+
 function renderActionCell(p, who, lovedKey, isPassed) {
   if (isPassed) {
     const isThisDeclined = p.nixedBy === who;
@@ -919,6 +933,7 @@ function renderPropertyRow(p, isPassed) {
         ${p.link ? `<a class="prop-name" href="${p.link}" target="_blank">${p.name}</a>` : `<span class="prop-name" style="color:var(--text)">${p.name}</span>`}
         ${p.id.startsWith('custom-') ? `<button class="delete-btn" onclick="deleteProperty('${p.id}')">Delete</button>` : ''}
       </td>
+      <td style="font-size:0.8rem;color:var(--text-dim)">${p.neighborhood || ''}</td>
       <td>
         <input class="cost-input" type="text" value="${p.cost}"
           onchange="updateCost('${p.id}', this.value)"
@@ -953,16 +968,16 @@ function renderPropertyRow(p, isPassed) {
         <div class="dist-stack">${p.distMiami && p.distMiami.mins ? driveRange(p.distMiami.mins) : '—'}</div>
       </td>
       <td>
-        <div class="dist-stack">${p.distWM && p.distWM.mins ? driveRange(p.distWM.mins) : '—'}</div>
+        <div class="dist-stack">${renderWalkDrive(p.distWM)}</div>
       </td>
       <td>
-        <div class="dist-stack">${p.distLasOlas && p.distLasOlas.mins ? driveRange(p.distLasOlas.mins) : '—'}</div>
+        <div class="dist-stack">${renderWalkDrive(p.distLasOlas)}</div>
       </td>
       <td>
-        <div class="dist-stack">${p.distBirch && p.distBirch.mins ? driveRange(p.distBirch.mins) : '—'}</div>
+        <div class="dist-stack">${renderWalkDrive(p.distBirch)}</div>
       </td>
       <td>
-        <div class="dist-stack">${p.distAIDS && p.distAIDS.mins ? driveRange(p.distAIDS.mins) : '—'}</div>
+        <div class="dist-stack">${renderWalkDrive(p.distAIDS)}</div>
       </td>
       <td class="notes-cell">
         <textarea class="note-textarea" placeholder="Add notes..."
@@ -1011,6 +1026,7 @@ function render() {
           <thead>
             <tr>
               <th rowspan="2">Community</th>
+              <th rowspan="2">Area</th>
               <th rowspan="2">Cost / Unit</th>
               <th rowspan="2">Walk<br>Score</th>
               <th rowspan="2">Soaking<br>Tub</th>
@@ -1034,15 +1050,16 @@ function render() {
           </thead>
           <tbody>
             ${showing.length === 0
-              ? `<tr><td colspan="16" class="empty-row">
+              ? `<tr><td colspan="17" class="empty-row">
                   ${STATE.activeTab === 'active' ? 'No active properties. Restore from the Declined tab.' : 'No declined properties.'}
                  </td></tr>`
               : showing.map(p => renderPropertyRow(p, STATE.activeTab === 'passed')).join('')
             }
             ${STATE.activeTab === 'active' ? `
-            <tr class="add-section-header"><td colspan="16">Add to List</td></tr>
+            <tr class="add-section-header"><td colspan="17">Add to List</td></tr>
             <tr class="add-row">
               <td><input class="add-input" id="add-name" type="text" placeholder="Place name" onkeydown="if(event.key==='Enter')addProperty()" /></td>
+              <td></td>
               <td><input class="add-input" id="add-cost" type="text" placeholder="Price" onkeydown="if(event.key==='Enter')addProperty()" /></td>
               <td></td>
               <td></td>
