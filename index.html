@@ -895,7 +895,7 @@ function renderPropertyRow(p, isPassed) {
         ` : '<span style="color:var(--text-light)">—</span>'}
       </td>
       <td>
-        <div class="nearby">${(p.walkableTo || []).join(', ')}</div>
+        <div class="nearby">${(p.walkableTo || []).join('<br>')}</div>
       </td>
       <td>
         <div class="standout-text">${p.standout || ''}</div>
