@@ -552,7 +552,7 @@ const DEFAULT_PROPERTIES = [
     walkableTo: ["Victoria Park trails"],
     amenities: ["2-car garage", "Impact windows", "10ft ceilings"],
     standout: "Standalone 3BR house with garage. Scenic walking area.",
-    nearestBeach: { label: "FTL Beach", dist: "1.5 mi", url: "https://www.google.com/maps/dir/?api=1&origin=1757+NE+9th+St,+Fort+Lauderdale,+FL&destination=Fort+Lauderdale+Beach,+FL&travelmode=walking" },
+    nearestBeach: { label: "Birch Beach", dist: "1.5 mi", url: "https://www.google.com/maps/dir/?api=1&origin=1757+NE+9th+St,+Fort+Lauderdale,+FL&destination=Hugh+Taylor+Birch+State+Park&travelmode=walking" },
     distHeron: { miles: 15, mins: 22 }, distMiami: { miles: 30, mins: 35 },
     distWM: { miles: 2, mins: 7 }, distLasOlas: { miles: 1.2, mins: 5, walkMins: 25 },
     distBirch: { miles: 1.5, mins: 5, walkMins: 25 }, distAIDS: { miles: 2, mins: 7 },
@@ -585,7 +585,7 @@ const DEFAULT_PROPERTIES = [
     special: "2 mo free on select units",
     notes: "",
     proposedUnit: null,
-    warning: "Only 3/2 Veneto (apt 2115) available — not until 4/15",
+    warning: "No unit until 4/15",
     nixed: false, nixedBy: '', nixedAt: '',
     ferrellLoved: false, nikiLoved: false
   },
@@ -616,7 +616,7 @@ const DEFAULT_PROPERTIES = [
   },
   {
     id: "mizner-park",
-    name: "Gables Mizner Park",
+    name: "Mizner Park",
     neighborhood: "Boca Raton",
     address: "401 NE Mizner Blvd, Boca Raton, FL 33432",
     lat: 26.3467, lng: -80.0834,
@@ -640,7 +640,7 @@ const DEFAULT_PROPERTIES = [
   },
   {
     id: "aviah-flagler",
-    name: "Aviah Flagler Village",
+    name: "Aviah",
     neighborhood: "Flagler Village",
     address: "440 NE 4th Ave, Fort Lauderdale, FL 33301",
     lat: 26.1275, lng: -80.1383,
@@ -702,11 +702,17 @@ function migrateProperties(props) {
     // Refresh display fields from defaults
     const def = defaultMap.get(p.id);
     if (def) {
+      p.name = def.name;
+      p.neighborhood = def.neighborhood || '';
+      p.soakingTub = def.soakingTub;
       p.standout = def.standout;
       p.amenities = [...def.amenities];
       p.walkableTo = [...def.walkableTo];
+      p.special = def.special;
+      p.warning = def.warning;
       if (def.nearestBeach) p.nearestBeach = {...def.nearestBeach};
-      if (def.neighborhood) p.neighborhood = def.neighborhood;
+      if (def.proposedUnit) p.proposedUnit = {...def.proposedUnit};
+      else p.proposedUnit = null;
     }
   });
 }
@@ -993,6 +999,12 @@ function renderPropertyRow(p, isPassed) {
 
 function render() {
   const active = STATE.properties.filter(p => !p.nixed);
+  const defaultOrder = DEFAULT_PROPERTIES.map(d => d.id);
+  active.sort((a, b) => {
+    const ai = defaultOrder.indexOf(a.id);
+    const bi = defaultOrder.indexOf(b.id);
+    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  });
   const passed = STATE.properties.filter(p => p.nixed);
   const showing = STATE.activeTab === "active" ? active : passed;
 
