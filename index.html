@@ -186,6 +186,30 @@
     font-style: italic;
     margin-top: 2px;
   }
+  .cost-warning {
+    font-size: 0.75rem;
+    color: #dc2626;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .cost-unit {
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-top: 2px;
+    display: inline-block;
+  }
+  .cost-unit:hover { text-decoration: underline; }
+  .tub-no { color: #dc2626; font-weight: 600; font-size: 0.82rem; }
+  .tub-yes { color: #16a34a; font-weight: 500; font-size: 0.82rem; }
+  .tub-unknown { color: var(--text-light); font-size: 0.82rem; }
+  .group-header {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    border-bottom: none;
+    padding-bottom: 2px;
+  }
 
   /* WALK SCORE */
   .ws {
@@ -457,214 +481,165 @@
 // ==================== DATA ====================
 const DEFAULT_PROPERTIES = [
   {
-    id: "mizner-park",
-    name: "Gables Mizner Park",
-    city: "Boca Raton",
-    address: "401 NE Mizner Blvd, Boca Raton, FL 33432",
-    lat: 26.3467,
-    lng: -80.0834,
-    cost: "$3,525 – $5,830",
-    costMin: 3525,
-    walkScore: 93,
-    walkableTo: ["Mizner Park shops & dining", "Royal Palm Place", "Boca Raton beach (~1 mi)", "Palmetto Park Rd restaurants"],
-    amenities: ["Rooftop pool", "Fitness center", "Pet-friendly", "Covered parking", "Mizner Park lifestyle"],
-    standout: "Right in Mizner Park — walkable upscale dining, shopping, movies, and beach within a mile",
-    distHeron: { miles: 22, mins: 30 },
-    distMiami: { miles: 50, mins: 55 },
-    distWM: { miles: 20, mins: 28 },
-    distLasOlas: { miles: 22, mins: 30 },
-    distBirch: { miles: 18, mins: 25 },
-    distAIDS: { miles: 20, mins: 28 },
-    link: "https://www.gables.com/communities/florida/boca-raton/mizner-park-apartments",
-    layoutLink: "https://www.gables.com/communities/florida/boca-raton/mizner-park-apartments",
-    special: "",
+    id: "icon-las-olas",
+    name: "Icon Las Olas",
+    address: "500 E Las Olas Blvd, Fort Lauderdale, FL 33301",
+    lat: 26.1186, lng: -80.1337,
+    cost: "$5,732/mo",
+    costMin: 5732,
+    walkScore: 94,
+    soakingTub: "",
+    walkableTo: ["FTL Beach (~0.8 mi)", "Galleria mall"],
+    amenities: ["Sky lounge", "Spa", "Resort pool", "Valet parking"],
+    standout: "42-story Related Group tower. Sky lounge & spa. Closest to beach on Las Olas.",
+    distHeron: { miles: 17, mins: 25 }, distMiami: { miles: 30, mins: 35 },
+    distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0, mins: 1 },
+    distBirch: { miles: 2, mins: 6 }, distAIDS: { miles: 3, mins: 10 },
+    link: "https://iconlasolasfl.com/luxury-apartment-amenities/",
+    special: "2 mo free if lease within 24hrs of tour",
     notes: "",
-    proposedUnit: null,
-    nixed: false,
-    nixedBy: '',
-    nixedAt: '',
-    ferrellLoved: false,
-    nikiLoved: false
+    proposedUnit: { label: "2BR/2.5BA+den — available now", url: "https://iconlasolasfl.com/floorplans/2x2-5denl/?unit_name=905" },
+    warning: "",
+    nixed: false, nixedBy: '', nixedAt: '',
+    ferrellLoved: false, nikiLoved: false
   },
   {
     id: "flow-ftl",
     name: "Flow Fort Lauderdale",
-    city: "Fort Lauderdale (Downtown)",
     address: "221 SW 1st Ave, Fort Lauderdale, FL 33301",
-    lat: 26.1186,
-    lng: -80.1437,
-    cost: "$3,632/mo (+ furniture fee)",
+    lat: 26.1186, lng: -80.1437,
+    cost: "$3,632/mo (+ furn. fee)",
     costMin: 3632,
     walkScore: 91,
-    walkableTo: ["Riverwalk", "NSU Art Museum", "Brightline station", "Downtown restaurants & bars"],
-    amenities: ["24/7 fitness center", "Co-working spaces", "Private restaurant", "Pool & sundeck", "Screening room", "34-story tower"],
-    standout: "WeWork founder's luxury brand — private restaurant, co-working, stunning views from 34 stories",
-    distHeron: { miles: 17, mins: 25 },
-    distMiami: { miles: 30, mins: 35 },
-    distWM: { miles: 3, mins: 10 },
-    distLasOlas: { miles: 0.5, mins: 3 },
-    distBirch: { miles: 3, mins: 10 },
-    distAIDS: { miles: 3, mins: 10 },
+    soakingTub: "no",
+    walkableTo: ["Brightline station", "NSU Art Museum"],
+    amenities: ["Private restaurant", "Co-working", "Screening room", "34-story tower"],
+    standout: "WeWork founder's luxury brand. Private restaurant, co-working, 34-story views.",
+    distHeron: { miles: 17, mins: 25 }, distMiami: { miles: 30, mins: 35 },
+    distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0.5, mins: 3 },
+    distBirch: { miles: 3, mins: 10 }, distAIDS: { miles: 3, mins: 10 },
     link: "https://flow.life/en/properties/fort-lauderdale/flow-life?active=1",
-    layoutLink: "https://flow.life/en/properties/fort-lauderdale/available-homes/sebastian-inlet-2-bedroom-furnished/fid/4c38e13212899004d0?beds=2&moveInDate=2026-03-01",
     special: "Up to 2 mo free on select units",
-    notes: "Open to this — but NO units have soaking tubs",
+    notes: "",
     proposedUnit: { label: "Sebastian Inlet 2BR furnished", url: "https://flow.life/en/properties/fort-lauderdale/available-homes/sebastian-inlet-2-bedroom-furnished/fid/4c38e13212899004d0?beds=2&moveInDate=2026-03-01" },
-    nixed: false,
-    nixedBy: '',
-    nixedAt: '',
-    ferrellLoved: false,
-    nikiLoved: false
+    warning: "",
+    nixed: false, nixedBy: '', nixedAt: '',
+    ferrellLoved: false, nikiLoved: false
   },
   {
     id: "1757-ne-9th",
     name: "1757 NE 9th St",
-    city: "Fort Lauderdale (Victoria Park)",
     address: "1757 NE 9th St, Fort Lauderdale, FL 33304",
-    lat: 26.1345,
-    lng: -80.1253,
-    cost: "$5,800 (3BR house)",
+    lat: 26.1345, lng: -80.1253,
+    cost: "$5,800/mo",
     costMin: 5800,
     walkScore: 72,
-    walkableTo: ["Victoria Park walking loops", "Holiday Park", "Sunrise Blvd cafes"],
-    amenities: ["Single-family home", "2-car garage", "Impact windows", "10ft ceilings", "Custom kitchen", "Private balcony", "CBS construction"],
-    standout: "Peaceful standalone 3BR house in Victoria Park — walking distance to multiple scenic loops. 10ft ceilings, impact windows, 2-car garage.",
-    distHeron: { miles: 15, mins: 22 },
-    distMiami: { miles: 30, mins: 35 },
-    distWM: { miles: 2, mins: 7 },
-    distLasOlas: { miles: 1.2, mins: 5 },
-    distBirch: { miles: 1.5, mins: 5 },
-    distAIDS: { miles: 2, mins: 7 },
+    soakingTub: "",
+    walkableTo: ["Victoria Park loops", "Holiday Park"],
+    amenities: ["2-car garage", "Impact windows", "10ft ceilings", "Custom kitchen", "Private balcony"],
+    standout: "Peaceful standalone 3BR house. Multiple scenic walking loops. CBS construction.",
+    distHeron: { miles: 15, mins: 22 }, distMiami: { miles: 30, mins: 35 },
+    distWM: { miles: 2, mins: 7 }, distLasOlas: { miles: 1.2, mins: 5 },
+    distBirch: { miles: 1.5, mins: 5 }, distAIDS: { miles: 2, mins: 7 },
     link: "https://www.zillow.com/homedetails/1757-NE-9th-St-Fort-Lauderdale-FL-33304/246619186_zpid/",
-    layoutLink: "https://www.zillow.com/homedetails/1757-NE-9th-St-Fort-Lauderdale-FL-33304/246619186_zpid/",
     special: "",
     notes: "",
     proposedUnit: null,
-    nixed: false,
-    nixedBy: '',
-    nixedAt: '',
-    ferrellLoved: false,
-    nikiLoved: false
+    warning: "",
+    nixed: false, nixedBy: '', nixedAt: '',
+    ferrellLoved: false, nikiLoved: false
   },
   {
     id: "wilton-metro",
-    name: "Metropolitan (Wilton Metro)",
-    city: "Wilton Manors",
+    name: "Metropolitan",
     address: "1220 NE 24th St, Wilton Manors, FL 33305",
-    lat: 26.1548,
-    lng: -80.1365,
+    lat: 26.1548, lng: -80.1365,
     cost: "$2,500 – $3,700",
     costMin: 2500,
     walkScore: 76,
-    walkableTo: ["Wilton Drive dining & nightlife", "Five Points", "Colohatchee Park", "Local shops"],
-    amenities: ["Pool & hot tub", "Basketball & tennis courts", "Fitness center", "Yoga studio", "Massage room", "Dog park", "Fireplaces"],
-    standout: "Best value — full resort amenities with basketball, tennis, yoga, massage. Walkable Wilton Drive nightlife",
-    distHeron: { miles: 12, mins: 20 },
-    distMiami: { miles: 33, mins: 40 },
-    distWM: { miles: 0.3, mins: 2 },
-    distLasOlas: { miles: 3, mins: 10 },
-    distBirch: { miles: 2.5, mins: 8 },
-    distAIDS: { miles: 0.3, mins: 2 },
+    soakingTub: "",
+    walkableTo: ["Five Points", "Colohatchee Park"],
+    amenities: ["Basketball & tennis", "Yoga studio", "Massage room", "Dog park", "Fireplaces"],
+    standout: "Best value — full resort amenities. On Wilton Drive.",
+    distHeron: { miles: 12, mins: 20 }, distMiami: { miles: 33, mins: 40 },
+    distWM: { miles: 0.3, mins: 2 }, distLasOlas: { miles: 3, mins: 10 },
+    distBirch: { miles: 2.5, mins: 8 }, distAIDS: { miles: 0.3, mins: 2 },
     link: "https://www.wiltonmetro.com/#section-metropolitan-living",
-    layoutLink: "https://www.wiltonmetro.com/luxury-apartments-wilton-manors/",
     special: "2 mo free on select units",
-    notes: "Limited availability — only a 3/2 Veneto model (apt 2115) open, not until 4/15. Probably out.",
-    proposedUnit: null,
-    nixed: false,
-    nixedBy: '',
-    nixedAt: '',
-    ferrellLoved: false,
-    nikiLoved: false
-  },
-  {
-    id: "aviah-flagler",
-    name: "Aviah Flagler Village",
-    city: "Fort Lauderdale (Flagler Village)",
-    address: "440 NE 4th Ave, Fort Lauderdale, FL 33301",
-    lat: 26.1275,
-    lng: -80.1383,
-    cost: "$2,390 – $3,516",
-    costMin: 2390,
-    walkScore: 96,
-    walkableTo: ["Flagler Village arts district", "Fat Village", "Downtown FTL", "Victoria Park"],
-    amenities: ["Resort-style pool & jacuzzi", "2-story 24hr fitness", "Yoga/spinning studio", "Dog park", "Outdoor fireplace & BBQ", "Courtyard homes & sky homes"],
-    standout: "Walk Score 96 — best walkability on the list. Unique sky-homes with 19ft ceilings",
-    distHeron: { miles: 16, mins: 24 },
-    distMiami: { miles: 30, mins: 35 },
-    distWM: { miles: 2, mins: 7 },
-    distLasOlas: { miles: 1, mins: 5 },
-    distBirch: { miles: 2.5, mins: 8 },
-    distAIDS: { miles: 2, mins: 7 },
-    link: "https://www.liveataviah.com/amenities/",
-    layoutLink: "https://www.liveataviah.com/plans/",
-    special: "1 mo free for eligible applicants",
     notes: "",
     proposedUnit: null,
-    nixed: false,
-    nixedBy: '',
-    nixedAt: '',
-    ferrellLoved: false,
-    nikiLoved: false
+    warning: "Only 3/2 Veneto (apt 2115) available — not until 4/15",
+    nixed: false, nixedBy: '', nixedAt: '',
+    ferrellLoved: false, nikiLoved: false
   },
   {
     id: "novo-las-olas",
     name: "Novo Las Olas",
-    city: "Fort Lauderdale (Downtown)",
     address: "220 SE 2nd St, Fort Lauderdale, FL 33301",
-    lat: 26.1176,
-    lng: -80.1387,
+    lat: 26.1176, lng: -80.1387,
     cost: "$3,479 – $4,987",
     costMin: 3479,
     walkScore: 94,
-    walkableTo: ["Riverwalk Fort Lauderdale", "Museum of Discovery & Science", "GreenWise Market on-site"],
-    amenities: ["Resort-style pool", "State-of-the-art fitness", "On-site GreenWise Market", "3D virtual tours", "Matterport walkthroughs"],
-    standout: "On-site GreenWise Market for groceries & ready-made meals — unique convenience factor",
-    distHeron: { miles: 17, mins: 25 },
-    distMiami: { miles: 30, mins: 35 },
-    distWM: { miles: 3, mins: 10 },
-    distLasOlas: { miles: 0.3, mins: 2 },
-    distBirch: { miles: 2.5, mins: 8 },
-    distAIDS: { miles: 3, mins: 10 },
+    soakingTub: "",
+    walkableTo: ["Discovery Museum", "GreenWise Market on-site"],
+    amenities: ["Resort pool", "Fitness center", "3D virtual tours"],
+    standout: "On-site GreenWise Market — unique grocery convenience.",
+    distHeron: { miles: 17, mins: 25 }, distMiami: { miles: 30, mins: 35 },
+    distWM: { miles: 3, mins: 10 }, distLasOlas: { miles: 0.3, mins: 2 },
+    distBirch: { miles: 2.5, mins: 8 }, distAIDS: { miles: 3, mins: 10 },
     link: "https://www.novolasolas.com/",
-    layoutLink: "https://www.novolasolas.com/Floor-plans.aspx",
     special: "1 mo free if move in by 6/30",
     notes: "",
     proposedUnit: null,
-    nixed: false,
-    nixedBy: '',
-    nixedAt: '',
-    ferrellLoved: false,
-    nikiLoved: false
+    warning: "",
+    nixed: false, nixedBy: '', nixedAt: '',
+    ferrellLoved: false, nikiLoved: false
   },
   {
-    id: "icon-las-olas",
-    name: "Icon Las Olas",
-    city: "Fort Lauderdale (Las Olas)",
-    address: "500 E Las Olas Blvd, Fort Lauderdale, FL 33301",
-    lat: 26.1186,
-    lng: -80.1337,
-    cost: "$5,732",
-    costMin: 5732,
-    walkScore: 94,
-    walkableTo: ["Fort Lauderdale Beach (~0.8 mi)", "Riverwalk", "Galleria mall area"],
-    amenities: ["42-story tower", "Sky lounge", "Resort pool", "Spa", "Fitness center", "Valet parking", "Related Group luxury"],
-    standout: "Ultra-luxury 42-story tower by Related Group — closest to the beach on Las Olas. Sky lounge & spa.",
-    distHeron: { miles: 17, mins: 25 },
-    distMiami: { miles: 30, mins: 35 },
-    distWM: { miles: 3, mins: 10 },
-    distLasOlas: { miles: 0, mins: 1 },
-    distBirch: { miles: 2, mins: 6 },
-    distAIDS: { miles: 3, mins: 10 },
-    link: "https://iconlasolasfl.com/luxury-apartment-amenities/",
-    layoutLink: "https://iconlasolasfl.com/floorplans/2x2-5denl/?unit_name=905",
-    special: "2 mo free if lease within 24hrs of tour",
+    id: "mizner-park",
+    name: "Gables Mizner Park",
+    address: "401 NE Mizner Blvd, Boca Raton, FL 33432",
+    lat: 26.3467, lng: -80.0834,
+    cost: "$3,525 – $5,830",
+    costMin: 3525,
+    walkScore: 93,
+    soakingTub: "",
+    walkableTo: ["Mizner Park shops", "Boca beach (~1 mi)"],
+    amenities: ["Rooftop pool", "Fitness center", "Pet-friendly"],
+    standout: "Upscale dining, shopping, movies & beach within a mile.",
+    distHeron: { miles: 22, mins: 30 }, distMiami: { miles: 50, mins: 55 },
+    distWM: { miles: 20, mins: 28 }, distLasOlas: { miles: 22, mins: 30 },
+    distBirch: { miles: 18, mins: 25 }, distAIDS: { miles: 20, mins: 28 },
+    link: "https://www.gables.com/communities/florida/boca-raton/mizner-park-apartments",
+    special: "",
     notes: "",
-    proposedUnit: { label: "2BR/2.5BA+den — $5,732, available now", url: "https://iconlasolasfl.com/floorplans/2x2-5denl/?unit_name=905" },
-    nixed: false,
-    nixedBy: '',
-    nixedAt: '',
-    ferrellLoved: false,
-    nikiLoved: false
+    proposedUnit: null,
+    warning: "",
+    nixed: false, nixedBy: '', nixedAt: '',
+    ferrellLoved: false, nikiLoved: false
+  },
+  {
+    id: "aviah-flagler",
+    name: "Aviah Flagler Village",
+    address: "440 NE 4th Ave, Fort Lauderdale, FL 33301",
+    lat: 26.1275, lng: -80.1383,
+    cost: "$2,390 – $3,516",
+    costMin: 2390,
+    walkScore: 96,
+    soakingTub: "",
+    walkableTo: ["Flagler Village arts", "Fat Village"],
+    amenities: ["2-story fitness", "Yoga/spinning", "Dog park", "Sky homes"],
+    standout: "Walk Score 96. Unique sky-homes with 19ft ceilings.",
+    distHeron: { miles: 16, mins: 24 }, distMiami: { miles: 30, mins: 35 },
+    distWM: { miles: 2, mins: 7 }, distLasOlas: { miles: 1, mins: 5 },
+    distBirch: { miles: 2.5, mins: 8 }, distAIDS: { miles: 2, mins: 7 },
+    link: "https://www.liveataviah.com/amenities/",
+    special: "1 mo free for eligible applicants",
+    notes: "",
+    proposedUnit: null,
+    warning: "",
+    nixed: false, nixedBy: '', nixedAt: '',
+    ferrellLoved: false, nikiLoved: false
   }
 ];
 
@@ -862,12 +837,12 @@ function addProperty() {
   const notes = document.getElementById('add-notes').value.trim() || '';
   const id = 'custom-' + Date.now();
   STATE.properties.push({
-    id, name, city: '', address: '', lat: 0, lng: 0,
-    cost, costMin: 0, walkScore: 0,
+    id, name, address: '', lat: 0, lng: 0,
+    cost, costMin: 0, walkScore: 0, soakingTub: '',
     walkableTo: [], amenities: [],
     standout: '', distHeron: { miles: 0, mins: 0 }, distMiami: { miles: 0, mins: 0 },
     distWM: { miles: 0, mins: 0 }, distLasOlas: { miles: 0, mins: 0 }, distBirch: { miles: 0, mins: 0 }, distAIDS: { miles: 0, mins: 0 },
-    link, layoutLink: link, special: '', notes, proposedUnit: null, nixed: false, nixedBy: '', nixedAt: '', ferrellLoved: false, nikiLoved: false
+    link, special: '', notes, proposedUnit: null, warning: '', nixed: false, nixedBy: '', nixedAt: '', ferrellLoved: false, nikiLoved: false
   });
   saveState();
   render();
@@ -907,20 +882,26 @@ function renderActionCell(p, who, lovedKey, isPassed) {
   return `<span class="act-wrap"><button class="act-btn act-love ${p[lovedKey] ? 'loved' : ''}" onclick="toggleLove('${p.id}','${who}')" title="${p[lovedKey] ? 'Remove from favorites' : 'Favorite'}">&#9829;</button><span class="act-label">Love</span></span><span class="act-wrap"><button class="act-btn act-pass" onclick="declineProperty('${p.id}','${who}')" title="Decline">&times;</button><span class="act-label">Decline</span></span>`;
 }
 
+function renderTubCell(val) {
+  if (val === 'no') return '<span class="tub-no">No</span>';
+  if (val === 'yes') return '<span class="tub-yes">Yes</span>';
+  return '<span class="tub-unknown">—</span>';
+}
+
 function renderPropertyRow(p, isPassed) {
   return `
     <tr>
       <td>
         ${p.link ? `<a class="prop-name" href="${p.link}" target="_blank">${p.name}</a>` : `<span class="prop-name" style="color:var(--text)">${p.name}</span>`}
-        ${p.city ? `<div class="prop-sub">${p.city}</div>` : ''}
-        ${p.layoutLink ? `<a class="floor-plans-link" href="${p.layoutLink}" target="_blank">Floor plans</a>` : ''}
         ${p.id.startsWith('custom-') ? `<button class="delete-btn" onclick="deleteProperty('${p.id}')">Delete</button>` : ''}
       </td>
       <td>
         <input class="cost-input" type="text" value="${p.cost}"
           onchange="updateCost('${p.id}', this.value)"
           onblur="updateCost('${p.id}', this.value)" />
+        ${p.proposedUnit ? `<a class="cost-unit" href="${p.proposedUnit.url}" target="_blank">${p.proposedUnit.label}</a>` : ''}
         ${p.special ? `<div class="cost-special">${p.special}</div>` : ''}
+        ${p.warning ? `<div class="cost-warning">${p.warning}</div>` : ''}
       </td>
       <td>
         ${p.walkScore ? `
@@ -930,6 +911,7 @@ function renderPropertyRow(p, isPassed) {
         <div class="ws-label">${wsLabel(p.walkScore)}</div>
         ` : '<span style="color:var(--text-light)">—</span>'}
       </td>
+      <td>${renderTubCell(p.soakingTub)}</td>
       <td>
         <div class="nearby">${(p.walkableTo || []).join('<br>')}</div>
       </td>
@@ -960,7 +942,6 @@ function renderPropertyRow(p, isPassed) {
           onchange="updateNotes('${p.id}', this.value)"
           onblur="updateNotes('${p.id}', this.value)"
         >${p.notes}</textarea>
-        ${p.proposedUnit ? `<a class="floor-plans-link" href="${p.proposedUnit.url}" target="_blank" style="color:var(--accent);font-weight:500">Proposed: ${p.proposedUnit.label}</a>` : ''}
       </td>
       <td class="actions-cell">${renderActionCell(p, 'ferrell', 'ferrellLoved', isPassed)}</td>
       <td class="actions-cell">${renderActionCell(p, 'niki', 'nikiLoved', isPassed)}</td>
@@ -1002,34 +983,40 @@ function render() {
         <table>
           <thead>
             <tr>
-              <th>Community</th>
-              <th>Cost (2BR/mo)</th>
-              <th>Walk Score</th>
-              <th>Nearby</th>
-              <th>Why It Stands Out</th>
+              <th rowspan="2">Community</th>
+              <th rowspan="2">Cost / Unit</th>
+              <th rowspan="2">Walk Score</th>
+              <th rowspan="2">Soaking Tub</th>
+              <th rowspan="2">Nearby</th>
+              <th rowspan="2">Standout</th>
+              <th colspan="2" class="group-header">Drive Time</th>
+              <th colspan="4" class="group-header">Walk / Drive</th>
+              <th rowspan="2">Notes</th>
+              <th rowspan="2">Ferrell</th>
+              <th rowspan="2">Niki</th>
+            </tr>
+            <tr>
               <th>Heron Bay</th>
-              <th>Miami Beach</th>
-              <th>DT Wilton Manors</th>
+              <th>Miami</th>
+              <th>DT WM</th>
               <th>Las Olas</th>
               <th>Birch Park</th>
               <th>AIDS Museum</th>
-              <th>Notes</th>
-              <th>Ferrell</th>
-              <th>Niki</th>
             </tr>
           </thead>
           <tbody>
             ${showing.length === 0
-              ? `<tr><td colspan="14" class="empty-row">
+              ? `<tr><td colspan="15" class="empty-row">
                   ${STATE.activeTab === 'active' ? 'No active properties. Restore from the Declined tab.' : 'No declined properties.'}
                  </td></tr>`
               : showing.map(p => renderPropertyRow(p, STATE.activeTab === 'passed')).join('')
             }
             ${STATE.activeTab === 'active' ? `
-            <tr class="add-section-header"><td colspan="14">Add to List</td></tr>
+            <tr class="add-section-header"><td colspan="15">Add to List</td></tr>
             <tr class="add-row">
               <td><input class="add-input" id="add-name" type="text" placeholder="Place name" onkeydown="if(event.key==='Enter')addProperty()" /></td>
               <td><input class="add-input" id="add-cost" type="text" placeholder="Price" onkeydown="if(event.key==='Enter')addProperty()" /></td>
+              <td></td>
               <td></td>
               <td><input class="add-input" id="add-link" type="text" placeholder="Link (URL)" onkeydown="if(event.key==='Enter')addProperty()" /></td>
               <td colspan="7"></td>
